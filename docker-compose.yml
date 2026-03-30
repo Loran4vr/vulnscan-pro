@@ -1,0 +1,12 @@
+version: '3'
+services:
+  vulnscan:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - BTC_ADDRESS=${BTC_ADDRESS}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
