@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VulnScan Pro — Automated Security Reconnaissance</title>
+<meta name="description" content="Automated security reconnaissance for any target. Subdomains, live hosts, tech detection, CVEs, screenshots, Exposure Score.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0a;color:#e0e0e0}
+.container{max-width:800px;margin:0 auto;padding:20px}
+.hero{text-align:center;padding:60px 0 30px}
+.hero h1{font-size:3em;background:linear-gradient(135deg,#00ff88,#00aaff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:#888;margin-top:10px;font-size:1.2em}
+.cta-btn{display:inline-block;margin-top:25px;padding:16px 40px;background:linear-gradient(135deg,#00ff88,#00aaff);color:#000;font-weight:bold;font-size:1.2em;border-radius:10px;text-decoration:none;transition:transform 0.2s}
+.cta-btn:hover{transform:scale(1.05)}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:40px 0}
+.feature{background:#111;border:1px solid #222;border-radius:10px;padding:20px;text-align:center}
+.feature .icon{font-size:2em;margin-bottom:8px}
+.feature h3{color:#fff;font-size:0.95em;margin-bottom:5px}
+.feature p{color:#666;font-size:0.8em}
+.how{background:#111;border-radius:12px;padding:30px;margin:30px 0}
+.how h2{color:#fff;margin-bottom:15px}
+.how ol{padding-left:20px}
+.how li{padding:8px 0;color:#aaa}
+.how li strong{color:#00ff88}
+.pricing{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:30px 0}
+.plan{background:#111;border:1px solid #222;border-radius:10px;padding:20px;text-align:center}
+.plan h3{color:#fff;font-size:1em}
+.plan .price{color:#00ff88;font-size:1.5em;font-weight:bold;margin:8px 0}
+.plan .desc{color:#666;font-size:0.8em}
+.self-host{background:#111;border-radius:12px;padding:30px;margin:30px 0}
+.self-host h2{color:#fff;margin-bottom:10px}
+.self-host pre{background:#0a0a0a;padding:15px;border-radius:8px;overflow-x:auto;color:#aaa;font-size:0.85em;margin-top:10px}
+.self-host a{color:#00ff88}
+footer{text-align:center;padding:40px 0;color:#444;font-size:0.85em}
+footer a{color:#00ff88;text-decoration:none}
+@media(max-width:600px){.features{grid-template-columns:1fr}.pricing{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <h1>🔍 VulnScan Pro</h1>
+    <p>Automated security reconnaissance for any target</p>
+    <a href="https://t.me/vulnscan_pro_bot" class="cta-btn">Try it Free on Telegram →</a>
+  </div>
+
+  <div class="features">
+    <div class="feature">
+      <div class="icon">🌐</div>
+      <h3>Subdomains</h3>
+      <p>Enumerate all subdomains</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🔧</div>
+      <h3>Tech Detection</h3>
+      <p>Identify CMS, frameworks, servers</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🔐</div>
+      <h3>SSL Analysis</h3>
+      <p>Certificate expiry, SANs, issuer</p>
+    </div>
+    <div class="feature">
+      <div class="icon">⚠️</div>
+      <h3>Sensitive Files</h3>
+      <p>.git, .env, actuator exposure</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🔴</div>
+      <h3>CORS Issues</h3>
+      <p>Reflected origin vulnerabilities</p>
+    </div>
+    <div class="feature">
+      <div class="icon">🦠</div>
+      <h3>Nuclei CVEs</h3>
+      <p>Known vulnerability detection</p>
+    </div>
+    <div class="feature">
+      <div class="icon">📸</div>
+      <h3>Screenshots</h3>
+      <p>Visual capture of live hosts</p>
+    </div>
+    <div class="feature">
+      <div class="icon">📊</div>
+      <h3>Exposure Score</h3>
+      <p>0-100 security rating</p>
+    </div>
+    <div class="feature">
+      <div class="icon">📝</div>
+      <h3>Bounty Report</h3>
+      <p>Formatted for HackerOne</p>
+    </div>
+  </div>
+
+  <div class="how">
+    <h2>How it works</h2>
+    <ol>
+      <li>Open <strong>@vulnscan_pro_bot</strong> on Telegram</li>
+      <li>Send <strong>/order</strong> and pick a tier</li>
+      <li>Enter your <strong>target domain</strong></li>
+      <li>Get your <strong>report</strong> in 2-5 minutes</li>
+    </ol>
+  </div>
+
+  <div class="pricing">
+    <div class="plan">
+      <h3>Free</h3>
+      <div class="price">$0</div>
+      <div class="desc">3 scans<br>Subdomains + hosts</div>
+    </div>
+    <div class="plan">
+      <h3>Basic</h3>
+      <div class="price">$4</div>
+      <div class="desc">Full scan<br>1 target</div>
+    </div>
+    <div class="plan">
+      <h3>Pro</h3>
+      <div class="price">$12</div>
+      <div class="desc">+ Nuclei + Score<br>5 targets</div>
+    </div>
+    <div class="plan">
+      <h3>Elite</h3>
+      <div class="price">$40</div>
+      <div class="desc">+ Bounty report<br>10 targets</div>
+    </div>
+  </div>
+
+  <div class="self-host">
+    <h2>🛠 Self-Host</h2>
+    <p>Run your own instance in one command:</p>
+    <pre>git clone https://github.com/Loran4vr/vulnscan-pro.git
+cd vulnscan-pro
+bash install.sh
+export BOT_TOKEN=your_token
+node bot/index.js</pre>
+    <p style="margin-top:10px">Or with Docker:</p>
+    <pre>docker-compose up -d</pre>
+  </div>
+
+  <footer>
+    <p><a href="https://github.com/Loran4vr/vulnscan-pro">GitHub</a> · <a href="https://t.me/vulnscan_pro_bot">Telegram</a></p>
+    <p style="margin-top:8px">BTC: 1BL4eV82zZ64Dp4cj3s9EgJ3ae8xPx5ZuJ</p>
+  </footer>
+</div>
+</body>
+</html>
