@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VulnScan Pro — Automated Security Recon</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0a;color:#e0e0e0;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:20px}
+.hero{text-align:center;padding:40px 0 20px}
+.hero h1{font-size:2.5em;background:linear-gradient(135deg,#00ff88,#00aaff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:#888;margin-top:8px;font-size:1.1em}
+.badges{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.badge{background:#1a1a2e;border:1px solid #00ff88;color:#00ff88;padding:4px 12px;border-radius:20px;font-size:0.8em}
+.scan-form{background:#111;border:1px solid #222;border-radius:12px;padding:30px;margin:20px 0}
+.scan-form h2{color:#fff;margin-bottom:15px;font-size:1.3em}
+.input-group{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap}
+.input-group input{flex:1;min-width:200px;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:#fff;font-size:1em}
+.input-group input:focus{outline:none;border-color:#00ff88}
+.tier-select{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:15px}
+.tier{background:#0a0a0a;border:2px solid #333;border-radius:8px;padding:12px 8px;text-align:center;cursor:pointer;transition:all 0.2s}
+.tier:hover{border-color:#00ff88}
+.tier.selected{border-color:#00ff88;background:#0a1a0a}
+.tier .name{font-weight:bold;color:#fff;font-size:0.95em}
+.tier .price{color:#00ff88;font-size:1.3em;font-weight:bold;margin:4px 0}
+.tier .desc{color:#666;font-size:0.75em}
+.scan-btn{width:100%;padding:14px;background:linear-gradient(135deg,#00ff88,#00aaff);color:#000;font-weight:bold;font-size:1.1em;border:none;border-radius:8px;cursor:pointer}
+.scan-btn:hover{opacity:0.9}
+.scan-btn:disabled{opacity:0.5;cursor:not-allowed}
+.progress{display:none;margin:20px 0;background:#111;border-radius:12px;padding:20px}
+.progress-bar{height:6px;background:#222;border-radius:3px;overflow:hidden;margin:10px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#00ff88,#00aaff);border-radius:3px;transition:width 0.5s}
+.progress-text{color:#888;font-size:0.9em}
+.results{display:none;margin:20px 0}
+.score-card{background:#111;border-radius:12px;padding:24px;text-align:center;margin-bottom:20px}
+.score-num{font-size:4em;font-weight:bold}
+.score-label{color:#888;font-size:0.9em;margin-top:4px}
+.finding{background:#111;border:1px solid #222;border-radius:8px;padding:16px;margin:10px 0}
+.finding h3{color:#fff;margin-bottom:8px;font-size:1em}
+.finding ul{list-style:none;padding:0}
+.finding li{padding:4px 0;color:#aaa;font-size:0.9em}
+.finding li::before{content:"• ";color:#00ff88}
+.vuln li::before{color:#ff4444}
+.warn li::before{color:#ffaa00}
+.cta{text-align:center;padding:30px 0;color:#666}
+.cta a{color:#00ff88;text-decoration:none}
+@media(max-width:600px){.tier-select{grid-template-columns:repeat(2,1fr)}.input-group{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <h1>🔍 VulnScan Pro</h1>
+    <p>Automated security reconnaissance for any target</p>
+    <div class="badges">
+      <span class="badge">⚡ Automated</span>
+      <span class="badge">🔐 BTC Payments</span>
+      <span class="badge">📊 Exposure Score</span>
+    </div>
+  </div>
+
+  <div class="scan-form">
+    <h2>Start a Scan</h2>
+    <div class="input-group">
+      <input type="text" id="target" placeholder="example.com" autofocus>
+      <button class="scan-btn" id="scanBtn" onclick="startScan()">🔍 Scan</button>
+    </div>
+    <div class="tier-select">
+      <div class="tier selected" data-tier="free" onclick="selectTier(this)">
+        <div class="name">Free</div>
+        <div class="price">$0</div>
+        <div class="desc">Subdomains + hosts</div>
+      </div>
+      <div class="tier" data-tier="basic" onclick="selectTier(this)">
+        <div class="name">Basic</div>
+        <div class="price">$4</div>
+        <div class="desc">Full scan, 1 target</div>
+      </div>
+      <div class="tier" data-tier="pro" onclick="selectTier(this)">
+        <div class="name">Pro</div>
+        <div class="price">$12</div>
+        <div class="desc">+ Nuclei + Score</div>
+      </div>
+      <div class="tier" data-tier="elite" onclick="selectTier(this)">
+        <div class="name">Elite</div>
+        <div class="price">$40</div>
+        <div class="desc">+ Bounty report</div>
+      </div>
+    </div>
+    <div style="color:#666;font-size:0.8em;text-align:center">Free tier: 3 scans. No signup needed. Or try @vulnscan_pro_bot on Telegram.</div>
+  </div>
+
+  <div class="progress" id="progress">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-text" id="progressText">Starting...</div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="cta">
+    <p>Also available on Telegram: <a href="https://t.me/vulnscan_pro_bot">@vulnscan_pro_bot</a></p>
+  </div>
+</div>
+
+<script>
+let selectedTier = 'free';
+let pollInterval = null;
+
+function selectTier(el) {
+  document.querySelectorAll('.tier').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTier = el.dataset.tier;
+}
+
+async function startScan() {
+  const target = document.getElementById('target').value.trim();
+  if (!target) return alert('Enter a domain');
+  
+  const btn = document.getElementById('scanBtn');
+  btn.disabled = true;
+  btn.textContent = 'Scanning...';
+  
+  document.getElementById('progress').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('progressFill').style.width = '5%';
+  document.getElementById('progressText').textContent = 'Starting scan...';
+
+  try {
+    const resp = await fetch('/api/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target, tier: selectedTier })
+    });
+    const { scanId } = await resp.json();
+    
+    pollInterval = setInterval(() => pollScan(scanId), 2000);
+  } catch (e) {
+    alert('Error: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '🔍 Scan';
+  }
+}
+
+async function pollScan(scanId) {
+  try {
+    const resp = await fetch(`/api/scan/${scanId}`);
+    const data = await resp.json();
+    
+    document.getElementById('progressFill').style.width = data.pct + '%';
+    document.getElementById('progressText').textContent = data.msg;
+    
+    if (data.done) {
+      clearInterval(pollInterval);
+      const btn = document.getElementById('scanBtn');
+      btn.disabled = false;
+      btn.textContent = '🔍 Scan';
+      
+      if (data.error) {
+        document.getElementById('results').innerHTML = `<div class="finding"><h3>❌ Error</h3><p>${data.error}</p></div>`;
+      } else {
+        renderResults(data.results);
+      }
+      document.getElementById('results').style.display = 'block';
+    }
+  } catch (e) {}
+}
+
+function renderResults(r) {
+  const score = selectedTier !== 'free' && r.sensitive !== undefined ? calcScore(r) : null;
+  const scoreColor = score >= 90 ? '#00ff88' : score >= 70 ? '#ffcc00' : score >= 50 ? '#ff8800' : '#ff4444';
+  const scoreEmoji = score >= 90 ? '🟢' : score >= 70 ? '🟡' : score >= 50 ? '🟠' : '🔴';
+  
+  let html = '';
+  
+  if (score !== null) {
+    html += `<div class="score-card">
+      <div class="score-num" style="color:${scoreColor}">${scoreEmoji} ${score}/100</div>
+      <div class="score-label">Exposure Score</div>
+    </div>`;
+  }
+  
+  html += `<div class="finding">
+    <h3>📊 Summary</h3>
+    <ul>
+      <li>${r.subdomains.length} subdomains discovered</li>
+      <li>${r.liveHosts.length} live hosts</li>
+      ${selectedTier !== 'free' ? `
+      <li>${r.tech.length} technologies detected</li>
+      <li>${r.sensitive.length} sensitive files exposed</li>
+      <li>${r.corsVuln.length} CORS vulnerabilities</li>
+      <li>${r.corsWild.length} CORS wildcard</li>
+      <li>${r.headers.length} missing security headers</li>
+      <li>${r.nuclei.length} nuclei findings</li>` : ''}
+    </ul>
+  </div>`;
+  
+  if (r.liveHosts.length) {
+    html += `<div class="finding"><h3>🌐 Live Hosts</h3><ul>${r.liveHosts.map(h => `<li>${h}</li>`).join('')}</ul></div>`;
+  }
+  
+  if (selectedTier !== 'free') {
+    if (r.tech.length) {
+      html += `<div class="finding"><h3>🔧 Technologies</h3><ul>${r.tech.map(t => `<li>${t}</li>`).join('')}</ul></div>`;
+    }
+    if (r.sensitive.length) {
+      html += `<div class="finding vuln"><h3>⚠️ Sensitive Files Exposed</h3><ul>${r.sensitive.map(s => `<li>${s}</li>`).join('')}</ul></div>`;
+    }
+    if (r.corsVuln.length) {
+      html += `<div class="finding vuln"><h3>🔴 CORS Vulnerable</h3><ul>${r.corsVuln.map(c => `<li>${c}</li>`).join('')}</ul></div>`;
+    }
+    if (r.corsWild.length) {
+      html += `<div class="finding warn"><h3>🟡 CORS Wildcard</h3><ul>${r.corsWild.map(c => `<li>${c}</li>`).join('')}</ul></div>`;
+    }
+    if (r.headers.length) {
+      html += `<div class="finding warn"><h3>🔓 Missing Headers</h3><ul>${r.headers.map(h => `<li>${h.url} → ${h.missing.join(', ')}</li>`).join('')}</ul></div>`;
+    }
+    if (r.ssl) {
+      html += `<div class="finding"><h3>🔐 SSL Certificate</h3><ul>
+        <li>Expires: ${r.ssl.notAfter || 'N/A'}${r.ssl.expiryWarning ? ' ⚠️' : ''}</li>
+        <li>SANs: ${(r.ssl.sans || []).slice(0, 8).join(', ')}</li>
+      </ul></div>`;
+    }
+    if (r.nuclei.length) {
+      html += `<div class="finding vuln"><h3>🦠 Nuclei Findings</h3><ul>${r.nuclei.map(n => `<li>${n}</li>`).join('')}</ul></div>`;
+    }
+  }
+  
+  document.getElementById('results').innerHTML = html;
+}
+
+function calcScore(r) {
+  let s = 100;
+  s -= (r.sensitive || []).length * 15;
+  s -= (r.corsVuln || []).length * 12;
+  s -= (r.corsWild || []).length * 5;
+  s -= Math.min((r.headers || []).length * 3, 20);
+  s -= (r.nuclei || []).filter(n => n.includes('[critical]')).length * 20;
+  s -= (r.nuclei || []).filter(n => n.includes('[high]')).length * 10;
+  return Math.max(0, Math.min(100, s));
+}
+
+document.getElementById('target').addEventListener('keydown', e => { if (e.key === 'Enter') startScan(); });
+</script>
+</body>
+</html>
